@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, defineEmits } from "vue"
+
+const emits = defineEmits(['playerSaved']);
 
 const inputName = ref<string>("");
-const playerX = ref<string>(""); 
-const playerO = ref<string>(""); 
+const playerX = ref<string>(localStorage.getItem('playerX') || '');
+const playerO = ref<string>(localStorage.getItem('playerO') || '');
 const playerSpanText = ref<string>("Player X: ");
 
 const updatePlayerText = (isPlayerX: boolean, playerValue: string) => {
@@ -23,7 +25,8 @@ const savePlayerName = () => {
     const playerValue = inputName.value;
 
     localStorage.setItem(playerKey, playerValue);
-    updatePlayerText(isPlayerX, playerValue);
+    updatePlayerText(isPlayerX, playerValue); 
+    emits("playerSaved"); 
   } else {
     alert("Please, enter a player name");
   }
@@ -31,6 +34,7 @@ const savePlayerName = () => {
 </script>
 
 <template>
+  <h2>Enter player name</h2>
   <div>
     <span>{{ playerSpanText }}</span> 
     <input v-model="inputName" type="text" minlength="1"/>
@@ -39,3 +43,9 @@ const savePlayerName = () => {
 </template>
 
 <style scoped></style>
+
+
+/*
+Starta ett spel när man trycker på Spara andra gången 
+Visa spelkomponenten 
+*/
