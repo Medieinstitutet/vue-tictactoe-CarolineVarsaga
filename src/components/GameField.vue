@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue';
+import WinningPlayer from './WinningPlayer.vue';
 
 const BOARD_SIZE = 3; 
 const cells = ref<Array<string>>(new Array(BOARD_SIZE * BOARD_SIZE).fill(""));
@@ -9,13 +10,39 @@ const playerO = ref<string>(localStorage.getItem('playerO') || 'Player O');
 
 const isXNext = ref<boolean>(true);
 
+const winner = ref<string | null>(null); 
+
 const currentPlayerName = computed(() => isXNext.value ? playerX.value : playerO.value);
 
 const cellClicked = (index: number) => {
-  if (cells.value[index] !== "") return; 
+  if (cells.value[index] !== "" || winner.value) return; 
   cells.value[index] = isXNext.value ? 'X' : 'O';
-  isXNext.value = !isXNext.value;
+  checkWinner();
+  console.log(cells.value)
+  if (!winner.value) {
+    isXNext.value = !isXNext.value;
+  } 
 }
+
+const checkWinner = () => {
+  const winningCombinations = [
+    [0, 1, 2], 
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8], 
+    [2, 4, 6]
+  ];
+
+  winningCombinations.forEach(combination => {
+    const [a, b, c] = combination;
+    if (cells.value[a] && cells.value[a] === cells.value[b] && cells.value[a] === cells.value[c]) {
+      winner.value = cells.value[a] === 'X' ? playerX.value : playerO.value;
+    }
+  });
+};
 
 onMounted(() => {
   isXNext.value = Math.random() < 0.5;
@@ -24,10 +51,10 @@ onMounted(() => {
 </script>
 
 <template>
-
-  <h2>Game on</h2>
+  
+  <h2>Game on</h2>  
+  <WinningPlayer :winner="winner" />
   <h2>Your turn, {{ currentPlayerName }}!</h2>
-
   <div class="board">
     <div v-for="(cell, index) in cells" :key="index" class="cell" @click="cellClicked(index)"> 
       {{ cell }}
