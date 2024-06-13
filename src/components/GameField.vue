@@ -18,7 +18,9 @@ const cellClicked = (index: number) => {
   if (cells.value[index] !== "" || winner.value) return; 
   cells.value[index] = isXNext.value ? 'X' : 'O';
   checkWinner();
-  console.log(cells.value)
+  if (!winner.value && isBoardFull()) {
+    winner.value = 'No one';
+  }
   if (!winner.value) {
     isXNext.value = !isXNext.value;
   } 
@@ -44,6 +46,10 @@ const checkWinner = () => {
   });
 };
 
+const isBoardFull = () => {
+  return cells.value.every(cell => cell !== '');
+};
+
 onMounted(() => {
   isXNext.value = Math.random() < 0.5;
 });
@@ -51,10 +57,8 @@ onMounted(() => {
 </script>
 
 <template>
-  
-  <h2>Game on</h2>  
-  <WinningPlayer :winner="winner" />
-  <h2>Your turn, {{ currentPlayerName }}!</h2>
+  <WinningPlayer v-if="winner" :winner="winner" />
+  <h2 v-else>Your turn, {{ currentPlayerName }}!</h2>
   <div class="board">
     <div v-for="(cell, index) in cells" :key="index" class="cell" @click="cellClicked(index)"> 
       {{ cell }}
