@@ -43,9 +43,3 @@ const savePlayerName = () => {
 </template>
 
 <style scoped></style>
-
-
-/*
-Starta ett spel när man trycker på Spara andra gången 
-Visa spelkomponenten 
-*/
