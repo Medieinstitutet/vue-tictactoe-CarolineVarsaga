@@ -13,8 +13,7 @@ defineProps<{ winner: string | null }>();
 
 <style scoped>
   .winner {
-    margin-top: 20px;
-    font-size: 24px;
-    color: green;
+    font-size: 2rem;
+    color: rgb(85, 193, 85); 
   }
 </style>
