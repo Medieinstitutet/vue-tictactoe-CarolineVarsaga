@@ -1,22 +1,40 @@
 <script setup lang="ts">
 
+  let playerXScore: number = parseInt(localStorage.getItem('playerXScore') ?? '0', 10);
+  let playerOScore: number = parseInt(localStorage.getItem('playerOScore') ?? '0', 10);
+  const playerX = localStorage.getItem('playerX');
+  const playerO = localStorage.getItem('playerO');
+
+  const leader = () => {
+    if (playerXScore > playerOScore) {
+      return playerX;
+    } else if (playerOScore > playerXScore) {
+      return playerO; 
+    } else {
+      return "no one";
+    }
+  }
+
+  const winner = leader(); 
+
 </script>
 
 <template>
   <div class="highscore-container">
-    <h2>Highscore</h2>  
+    <h2>Highscore</h2> 
+    <p>And the best of the best is... {{ winner }} !</p>
     <table>
       <tr>
         <th>Name</th>
         <th>Points</th>
       </tr>
       <tr>
-        <td>Caroline</td>
-        <td>0</td>
+        <td>{{ playerX }}</td>
+        <td>{{ playerXScore ?? 0 }}</td>
       </tr>
       <tr>
-        <td>T</td>
-        <td>2</td>
+        <td>{{ playerO }}</td>
+        <td>{{ playerOScore ?? 0 }}</td>
       </tr>
     </table>
   </div>
@@ -29,7 +47,7 @@
     justify-content: center;
     align-items: center;
   }
-  
+
   tr {
     display: grid;
     grid-template-columns: repeat(2, 1fr); 
