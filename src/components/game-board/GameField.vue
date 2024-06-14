@@ -2,12 +2,16 @@
   import { ref, onMounted, computed } from "vue";
   import WinningPlayer from "./WinningPlayer.vue";
   import LandingPage from "../landing-page/LandingPage.vue";
+  import Highscore from "../highscore-page/Highscore.vue";
 
   const BOARD_SIZE = 3; 
   const cells = ref<Array<string>>(new Array(BOARD_SIZE * BOARD_SIZE).fill(""));
 
   const playerX = ref<string>(localStorage.getItem("playerX") || "Player X");
   const playerO = ref<string>(localStorage.getItem("playerO") || "Player O"); 
+
+  const playerXScore = ref<number>(parseInt(localStorage.getItem('playerXScore') ?? '0', 10));
+  const playerOScore = ref<number>(parseInt(localStorage.getItem('playerOScore') ?? '0', 10));
 
   const isXNext = ref<boolean>(true);
 
@@ -16,6 +20,7 @@
   const currentPlayerName = computed(() => isXNext.value ? playerX.value : playerO.value);
 
   const showLandingPage = ref<boolean>(false);
+  const showHighscore = ref<boolean>(false); 
 
   const cellClicked = (index: number) => {
     if (cells.value[index] !== "" || winner.value) return; 
@@ -30,23 +35,33 @@
   }
 
   const checkWinner = () => {
+    if (winner.value) return;
+
     const winningCombinations = [
-      [0, 1, 2], 
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8], 
-      [2, 4, 6]
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
     ];
 
-    winningCombinations.forEach(combination => {
+    for (const combination of winningCombinations) {
       const [a, b, c] = combination;
       if (cells.value[a] && cells.value[a] === cells.value[b] && cells.value[a] === cells.value[c]) {
-        winner.value = cells.value[a] === "X" ? playerX.value : playerO.value;
+        const winningPlayer = cells.value[a] === "X" ? localStorage.getItem('playerX') : localStorage.getItem('playerO');
+        
+        winner.value = winningPlayer;
+
+        if (winner.value === localStorage.getItem('playerX')) {
+          playerXScore.value += 1;
+          localStorage.setItem('playerXScore', playerXScore.value.toString());
+        } else if (winner.value === localStorage.getItem('playerO')) {
+          playerOScore.value += 1;
+          localStorage.setItem('playerOScore', playerOScore.value.toString());
+        }
+
+        localStorage.setItem('winner', winner.value ?? '');
+        break; 
       }
-    });
+    }
   };
 
   const isBoardFull = () => {
@@ -66,10 +81,17 @@
   const backToStartButton = () => {
     localStorage.removeItem('playerX'); 
     localStorage.removeItem('playerO'); 
+    localStorage.removeItem('playerXScore');
+    localStorage.removeItem('playerOScore'); 
+    localStorage.removeItem('winner'); 
     winner.value = null; 
     cells.value.fill(''); 
     isXNext.value = true; 
     showLandingPage.value = true; 
+  }
+
+  const viewHighscore = () => {
+    showHighscore.value = true; 
   }
 
   /* onMounted(randomizeStartPlayer); */ 
@@ -93,12 +115,13 @@
     </div>
 
     <div class="button-container">
-      <button>View highscore</button>
+      <button @click="viewHighscore">View highscore</button>
       <button v-if="winner" @click="playAgain">Play again</button>
       <button @click="backToStartButton">Back to start</button>
     </div>
   </div>
   <LandingPage v-if="showLandingPage" />
+  <Highscore v-if="showHighscore" /> 
 </template>
 
 <style scoped>
