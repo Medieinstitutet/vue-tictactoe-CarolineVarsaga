@@ -1,36 +1,36 @@
 <script setup lang="ts">
-import { ref, defineEmits } from "vue"
+  import { ref } from "vue"
 
-const emits = defineEmits(["playerSaved"]);
+  const emits = defineEmits(["playerSaved"]);
 
-const inputName = ref<string>("");
-const playerX = ref<string>(localStorage.getItem("playerX") || "");
-const playerO = ref<string>(localStorage.getItem("playerO") || "");
-const playerSpanText = ref<string>("Player X: ");
+  const inputName = ref<string>("");
+  const playerX = ref<string>(localStorage.getItem("playerX") || "");
+  const playerO = ref<string>(localStorage.getItem("playerO") || "");
+  const playerSpanText = ref<string>("Player X: ");
 
-const updatePlayerText = (isPlayerX: boolean, playerValue: string) => {
-  if (isPlayerX) {
-    playerX.value = playerValue;
-    playerSpanText.value = "Player O: ";
-  } else {
-    playerO.value = playerValue;
+  const updatePlayerText = (isPlayerX: boolean, playerValue: string) => {
+    if (isPlayerX) {
+      playerX.value = playerValue;
+      playerSpanText.value = "Player O: ";
+    } else {
+      playerO.value = playerValue;
+    }
+    inputName.value = "";
+  };
+
+  const savePlayerName = () => {
+    if (inputName.value.trim()) {
+      const isPlayerX = !playerX.value;
+      const playerKey = isPlayerX ? "playerX" : "playerO";
+      const playerValue = inputName.value;
+
+      localStorage.setItem(playerKey, playerValue);
+      updatePlayerText(isPlayerX, playerValue); 
+      emits("playerSaved"); 
+    } else {
+      alert("Please, enter a player name");
+    }
   }
-  inputName.value = "";
-};
-
-const savePlayerName = () => {
-  if (inputName.value.trim()) {
-    const isPlayerX = !playerX.value;
-    const playerKey = isPlayerX ? "playerX" : "playerO";
-    const playerValue = inputName.value;
-
-    localStorage.setItem(playerKey, playerValue);
-    updatePlayerText(isPlayerX, playerValue); 
-    emits("playerSaved"); 
-  } else {
-    alert("Please, enter a player name");
-  }
-}
 </script>
 
 <template>
