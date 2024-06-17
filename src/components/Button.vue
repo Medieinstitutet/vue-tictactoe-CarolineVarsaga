@@ -1,8 +1,9 @@
 <script setup lang="ts">
 
-  const props = defineProps({
-    onClick: Function,
-  });
+  interface IButtonProps {
+    onClick: Function;
+  }
+  const props = defineProps<IButtonProps>(); 
 
   const handleClick = () => {
     if (props.onClick) {
