@@ -1,26 +1,38 @@
 <script setup lang="ts">
+  import { ref } from 'vue'; 
+  import Button from '../Button.vue';
+  import GameField from '../game-board/GameField.vue';
 
-  let playerXScore: number = parseInt(localStorage.getItem('playerXScore') ?? '0', 10);
-  let playerOScore: number = parseInt(localStorage.getItem('playerOScore') ?? '0', 10);
-  const playerX = localStorage.getItem('playerX');
-  const playerO = localStorage.getItem('playerO');
+  interface IHighscoreProps {
+    playerX: string; 
+    playerO: string; 
+    playerXScore: number; 
+    playerOScore: number; 
+  }
+
+  const props = defineProps<IHighscoreProps>(); 
 
   const leader = () => {
-    if (playerXScore > playerOScore) {
-      return playerX;
-    } else if (playerOScore > playerXScore) {
-      return playerO; 
+    if (props.playerXScore > props.playerOScore) {
+      return props.playerX;
+    } else if (props.playerOScore > props.playerXScore) {
+      return props.playerO; 
     } else {
       return "no one";
     }
   }
 
   const winner = leader(); 
+  const showGameField = ref<boolean>(false);
+
+  const backToGame = () => {
+    showGameField.value = true; 
+  }
 
 </script>
 
 <template>
-  <div class="highscore-container">
+  <div class="highscore-container" v-show="!showGameField">
     <h2>Highscore</h2> 
     <p>And the best of the best is... {{ winner }} !</p>
     <table>
@@ -37,7 +49,14 @@
         <td>{{ playerOScore ?? 0 }}</td>
       </tr>
     </table>
+    <Button @click="backToGame">Game board</Button>
   </div>
+  
+  <GameField 
+    v-if="showGameField"
+    :playerX="playerX"
+    :playerO="playerO"
+  /> 
 </template>
 
 <style scoped>
