@@ -51,7 +51,6 @@
   const cellClicked = (index: number) => {
     if (cells.value[index] !== "" || winner.value) return; 
     cells.value[index] = isXNext.value ? "X" : "O";
-    saveGameState();
     checkWinner();
     if (!winner.value && isBoardFull()) {
       winner.value = "No one";
@@ -59,6 +58,7 @@
     if (!winner.value) {
       isXNext.value = !isXNext.value;
     } 
+    saveGameState();
   }     
 
   const checkWinner = () => {
