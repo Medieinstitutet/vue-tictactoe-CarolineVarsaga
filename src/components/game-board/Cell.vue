@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
   interface ICellProps {
-    key: number; 
     cell: string;
     index: number; 
     onClick: (index: number) => void; 
@@ -30,5 +29,13 @@
   height: 100px;
   font-size: 5rem;
   cursor: pointer;
+}
+
+.cell:hover {
+  background-color: rgb(66, 66, 66);
+}
+
+.cell:active {
+  background-color: rgb(46, 46, 46);
 }
 </style>
