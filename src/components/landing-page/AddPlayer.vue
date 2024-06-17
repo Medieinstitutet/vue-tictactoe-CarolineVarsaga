@@ -1,26 +1,41 @@
 <script setup lang="ts">
-  import { ref } from "vue"
+  import { ref, watch } from "vue"
 
-  const emits = defineEmits(["playerSaved"]);
+  interface IAddPlayerProps {
+    playerX: string; 
+    playerO: string; 
+  }
+
+  const props = defineProps<IAddPlayerProps>(); 
+  const emits = defineEmits(["playerSaved"]); 
 
   const inputName = ref<string>("");
-  const playerX = ref<string>(localStorage.getItem("playerX") || "");
-  const playerO = ref<string>(localStorage.getItem("playerO") || "");
   const playerSpanText = ref<string>("Player X: ");
+
+  const localPlayerX = ref<string>(props.playerX);
+  const localPlayerO = ref<string>(props.playerO);
 
   const updatePlayerText = (isPlayerX: boolean, playerValue: string) => {
     if (isPlayerX) {
-      playerX.value = playerValue;
+      localPlayerX.value = playerValue;
       playerSpanText.value = "Player O: ";
     } else {
-      playerO.value = playerValue;
+      localPlayerO.value = playerValue;
     }
     inputName.value = "";
-  };
+};
+
+  watch(() => props.playerX, (newVal) => {
+    localPlayerX.value = newVal;
+  });
+
+  watch(() => props.playerO, (newVal) => {
+    localPlayerO.value = newVal;
+  }); 
 
   const savePlayerName = () => {
     if (inputName.value.trim()) {
-      const isPlayerX = !playerX.value;
+      const isPlayerX = !localPlayerX.value;
       const playerKey = isPlayerX ? "playerX" : "playerO";
       const playerValue = inputName.value;
 
@@ -30,7 +45,7 @@
     } else {
       alert("Please, enter a player name");
     }
-  }
+  } 
 </script>
 
 <template>
@@ -39,7 +54,8 @@
     <span>{{ playerSpanText }}</span> 
     <input v-model="inputName" type="text" minlength="1"/>
     <button @click="savePlayerName">Save</button>
-  </div>
+  </div> 
+
 </template>
 
 <style scoped></style>
