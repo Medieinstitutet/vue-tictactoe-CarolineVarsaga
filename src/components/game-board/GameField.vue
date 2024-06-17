@@ -20,18 +20,18 @@
     winner: null
   };
   
-  const localStorageGameKey = 'tic-tac-toe-game';
+  const localStorageGameKey = "tic-tac-toe-game";
 
   if (localStorage.getItem(localStorageGameKey)) {
     try {
-      initialState = JSON.parse(localStorage.getItem(localStorageGameKey) || '');
+      initialState = JSON.parse(localStorage.getItem(localStorageGameKey) || "");
     } catch (error) {
-      console.error('Error parsing localStorage data:', error);
+      console.error("Error parsing localStorage data:", error);
     }
   } 
  
-  const playerXScore = ref<number>(parseInt(localStorage.getItem('playerXScore') ?? '0', 10));
-  const playerOScore = ref<number>(parseInt(localStorage.getItem('playerOScore') ?? '0', 10)); 
+  const playerXScore = ref<number>(parseInt(localStorage.getItem("playerXScore") ?? "0", 10));
+  const playerOScore = ref<number>(parseInt(localStorage.getItem("playerOScore") ?? "0", 10)); 
 
   const cells = ref<string[]>(initialState.cells);
   const isXNext = ref<boolean>(initialState.isXNext);
@@ -74,18 +74,18 @@
       const [a, b, c] = combination;
         
       if (cells.value[a] && cells.value[a] === cells.value[b] && cells.value[a] === cells.value[c]) {
-        const winningPlayer = cells.value[a] === "X" ? localStorage.getItem('playerX') : localStorage.getItem('playerO');
+        const winningPlayer = cells.value[a] === "X" ? localStorage.getItem("playerX") : localStorage.getItem("playerO");
         winner.value = winningPlayer;
 
-        if (winner.value === localStorage.getItem('playerX')) {
+        if (winner.value === localStorage.getItem("playerX")) {
           playerXScore.value += 1;
-          localStorage.setItem('playerXScore', playerXScore.value.toString());
-        } else if (winner.value === localStorage.getItem('playerO')) {
+          localStorage.setItem("playerXScore", playerXScore.value.toString());
+        } else if (winner.value === localStorage.getItem("playerO")) {
           playerOScore.value += 1;
-          localStorage.setItem('playerOScore', playerOScore.value.toString());
+          localStorage.setItem("playerOScore", playerOScore.value.toString());
         }
 
-        localStorage.setItem('winner', winner.value ?? '');
+        localStorage.setItem("winner", winner.value ?? "");
         saveGameState(); 
         break; 
       }
@@ -110,7 +110,7 @@
   const backToStartButton = () => {
     localStorage.clear(); 
     winner.value = null; 
-    cells.value.fill(''); 
+    cells.value.fill(""); 
     isXNext.value = true; 
     showLandingPage.value = true; 
   }
@@ -119,20 +119,19 @@
     showHighscore.value = true; 
   } 
 
-  if (!localStorage.getItem('playerX') || !localStorage.getItem('playerO')) {
+  if (!localStorage.getItem("playerX") || !localStorage.getItem("playerO")) {
     backToStartButton();
   } else {
     randomizeStartPlayer();
   } 
 
   onMounted(() => {
-    window.addEventListener('beforeunload', saveGameState);
+    window.addEventListener("beforeunload", saveGameState);
   });
 
   onUnmounted(() => {
-    window.removeEventListener('beforeunload', saveGameState);
+    window.removeEventListener("beforeunload", saveGameState);
   });
-
 </script>
 
 <template>

@@ -1,11 +1,9 @@
 <script setup lang="ts">
-
   interface IWinningPlayerProps {
     winner: string | null; 
   }
 
-  defineProps<IWinningPlayerProps>();
-  
+  defineProps<IWinningPlayerProps>();  
 </script>
 
 <template>

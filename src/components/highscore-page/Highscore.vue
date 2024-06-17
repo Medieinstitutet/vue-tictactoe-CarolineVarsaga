@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import { ref } from 'vue'; 
-  import Button from '../Button.vue';
-  import GameField from '../game-board/GameField.vue';
+  import { ref } from "vue"; 
+  import Button from "../Button.vue";
+  import GameField from "../game-board/GameField.vue";
 
   interface IHighscoreProps {
     playerX: string; 
@@ -28,7 +28,6 @@
   const backToGame = () => {
     showGameField.value = true; 
   }
-
 </script>
 
 <template>

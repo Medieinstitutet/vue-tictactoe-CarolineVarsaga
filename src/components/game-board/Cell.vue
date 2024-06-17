@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
   interface ICellProps {
     cell: string;
     index: number; 
@@ -11,7 +10,6 @@
   const handleClick = () => {
     props.onClick(props.index);
   };  
-
 </script>
 
 <template>
