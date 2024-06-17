@@ -3,36 +3,33 @@
   import WinningPlayer from "./WinningPlayer.vue";
   import LandingPage from "../landing-page/LandingPage.vue";
   import Cell from "./Cell.vue";
-  //import Highscore from "../highscore-page/Highscore.vue";
+  import Highscore from "../highscore-page/Highscore.vue";
   import Button from "../Button.vue";
-  //import GameBoard from "./GameBoard.vue";
 
   interface IGameBoardProps {
     playerX: string; 
     playerO: string; 
-    BOARD_SIZE: number; 
   }
   
   const props = defineProps<IGameBoardProps>(); 
+  const BOARD_SIZE = 3; 
 
   let initialState = {
     isXNext: true,
-    cells: new Array(props.BOARD_SIZE * props.BOARD_SIZE).fill(""),
+    cells: new Array(BOARD_SIZE * BOARD_SIZE).fill(""),
     winner: null
   };
-
   
-  const localStorageKey = 'tic-tac-toe-game';
+  const localStorageGameKey = 'tic-tac-toe-game';
 
-  if (localStorage.getItem(localStorageKey)) {
+  if (localStorage.getItem(localStorageGameKey)) {
     try {
-      initialState = JSON.parse(localStorage.getItem(localStorageKey) || '');
+      initialState = JSON.parse(localStorage.getItem(localStorageGameKey) || '');
     } catch (error) {
       console.error('Error parsing localStorage data:', error);
     }
   } 
-
-
+ 
   const playerXScore = ref<number>(parseInt(localStorage.getItem('playerXScore') ?? '0', 10));
   const playerOScore = ref<number>(parseInt(localStorage.getItem('playerOScore') ?? '0', 10)); 
 
@@ -48,7 +45,7 @@
 
   const saveGameState = () => {
     const gameState = JSON.stringify({ isXNext: isXNext.value, cells: cells.value, winner: winner.value });
-    localStorage.setItem(localStorageKey, gameState);
+    localStorage.setItem(localStorageGameKey, gameState);
   };
 
   const cellClicked = (index: number) => {
@@ -89,8 +86,7 @@
         }
 
         localStorage.setItem('winner', winner.value ?? '');
-        /* const emits = defineEmits(['winner']);
-        emits("winner");  */
+        saveGameState(); 
         break; 
       }
     }
@@ -102,10 +98,9 @@
 
   const playAgain = () => {
     cells.value.fill("");
+    localStorage.removeItem("tic-tac-toe-game"); 
     winner.value = null; 
     randomizeStartPlayer(); 
-    /* const emits = defineEmits(['play-again']);
-    emits("play-again"); */
   }
 
   const randomizeStartPlayer = () => {
@@ -113,11 +108,7 @@
   };
 
   const backToStartButton = () => {
-    localStorage.removeItem('playerX'); 
-    localStorage.removeItem('playerO'); 
-    localStorage.removeItem('playerXScore');
-    localStorage.removeItem('playerOScore'); 
-    localStorage.removeItem('winner'); 
+    localStorage.clear(); 
     winner.value = null; 
     cells.value.fill(''); 
     isXNext.value = true; 
@@ -145,7 +136,7 @@
 </script>
 
 <template>
-  <div class="gameBoard" v-if="!showLandingPage">
+  <div class="gameBoard" v-show="!showLandingPage && !showHighscore">
     <h1>Tic Tac Toe</h1>
     <WinningPlayer v-if="winner" :winner="winner" />
     <h2 v-else>Your turn, {{ currentPlayerName }}!</h2>
@@ -159,13 +150,19 @@
       />
     </div> 
     <div class="button-container">
-      <!-- <Button @click="viewHighscore">View highscore</Button> -->
+      <Button @click="viewHighscore">View highscore</Button>
       <Button v-if="winner" @click="playAgain">Play again</Button>
       <Button @click="backToStartButton">Back to start</Button>
     </div> 
   </div>
   <LandingPage v-if="showLandingPage" />
-  <!-- <Highscore v-if="showHighscore" />  -->
+  <Highscore 
+    v-if="showHighscore" 
+    :playerX="playerX"
+    :playerO="playerO"
+    :playerXScore="playerXScore"
+    :playerOScore="playerOScore"
+  />  
 </template>
 
 <style scoped>
@@ -174,16 +171,6 @@
     grid-template-columns: repeat(3, 1fr);
     width: 300px; 
     margin: 20px auto;
-  } 
-
-  .cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ccc;
-    height: 100px; 
-    font-size: 5rem; 
-    cursor: pointer;
   } 
 
   .button-container {
