@@ -64,6 +64,15 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 1rem; 
+    border: 0.5rem dotted; 
+    border-radius: 20px;
+    height: 25rem;
+    width: 25rem;
+  }
+
+  h2 {
+    text-transform: uppercase;
   }
 
   tr {
