@@ -59,6 +59,18 @@
 </template>
 
 <style scoped>
+  @keyframes pulse {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      transform: scale(1.1) rotate(-5deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
   .highscore-container {
     display: flex; 
     flex-direction: column;
@@ -73,6 +85,8 @@
 
   h2 {
     text-transform: uppercase;
+    animation: pulse 1.8s infinite;
+    display: inline-block;
   }
 
   tr {
