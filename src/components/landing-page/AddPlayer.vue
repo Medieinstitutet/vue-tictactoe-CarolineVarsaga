@@ -94,6 +94,7 @@
     border: 1px solid #ccc; 
     width: 250px;
     background-color: rgb(51, 51, 51);
+    color: #ccc; 
   }
 
   .saveButton {
