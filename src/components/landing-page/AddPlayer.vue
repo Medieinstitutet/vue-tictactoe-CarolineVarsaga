@@ -71,6 +71,7 @@
   .playerNameText {
     font-size: 1.5rem;
   }
+  
   input {
     height: 25px; 
     border-radius: 8px;
