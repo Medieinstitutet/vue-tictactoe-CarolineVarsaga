@@ -163,6 +163,32 @@
 </template>
 
 <style scoped lang="scss">
+@keyframes pulseX {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+      background-color: rgb(96, 57, 116);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes pulseO {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+      background-color: rgb(116, 97, 57);
+    }
+    100% {
+      transform: scale(1);
+    }
+
+  }
+  
   .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -170,10 +196,12 @@
     margin: 20px auto;
 
     .x {
+      animation: pulseX 0.5s;    
       color: rgb(146, 146, 255); 
     }
 
     .o {
+      animation: pulseO 0.5s;    
       color: rgb(250, 196, 95); 
     }
   }
