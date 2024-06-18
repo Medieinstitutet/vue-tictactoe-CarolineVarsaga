@@ -37,7 +37,6 @@
   const isXNext = ref<boolean>(initialState.isXNext);
   const winner = ref<string | null>(initialState.winner);
 
-
   const currentPlayerName = computed(() => isXNext.value ? props.playerX : props.playerO);
 
   const showLandingPage = ref<boolean>(false);
@@ -49,18 +48,19 @@
   };
 
   const cellClicked = (index: number) => {
-    if (cells.value[index] !== "" || winner.value) return; 
-    cells.value[index] = isXNext.value ? "X" : "O";
-    checkWinner();
-    if (!winner.value && isBoardFull()) {
-      winner.value = "No one";
-    }
-    if (!winner.value) {
-      isXNext.value = !isXNext.value;
-    } 
-    saveGameState();
-  }     
-
+    cells.value[index] === "" && !winner.value 
+      ? (
+        cells.value[index] = isXNext.value ? "X" : "O",
+        checkWinner(),
+        winner.value 
+          ? saveGameState() 
+          : isBoardFull() 
+            ? (winner.value = "No one", saveGameState()) 
+            : (isXNext.value = !isXNext.value, saveGameState())
+        ) 
+      : null; 
+  }    
+  
   const checkWinner = () => {
     if (winner.value) return;
 
@@ -77,20 +77,21 @@
         const winningPlayer = cells.value[a] === "X" ? localStorage.getItem("playerX") : localStorage.getItem("playerO");
         winner.value = winningPlayer;
 
-        if (winner.value === localStorage.getItem("playerX")) {
-          playerXScore.value += 1;
-          localStorage.setItem("playerXScore", playerXScore.value.toString());
-        } else if (winner.value === localStorage.getItem("playerO")) {
-          playerOScore.value += 1;
-          localStorage.setItem("playerOScore", playerOScore.value.toString());
-        }
+        updateScore(winningPlayer);
 
-        localStorage.setItem("winner", winner.value ?? "");
-        saveGameState(); 
-        break; 
+        localStorage.setItem("winner", winner.value || "");
+        saveGameState();
       }
     }
-  };  
+  };    
+
+  const updateScore = (winningPlayer: string | null) => {
+    winningPlayer === localStorage.getItem("playerX")
+      ? (playerXScore.value += 1, localStorage.setItem("playerXScore", playerXScore.value.toString()))
+      : winningPlayer === localStorage.getItem("playerO")
+      ? (playerOScore.value += 1, localStorage.setItem("playerOScore", playerOScore.value.toString()))
+      : null;
+  };
 
   const isBoardFull = () => {
     return cells.value.every(cell => cell !== "");
@@ -119,11 +120,7 @@
     showHighscore.value = true; 
   } 
 
-  if (!localStorage.getItem("playerX") || !localStorage.getItem("playerO")) {
-    backToStartButton();
-  } else {
-    randomizeStartPlayer();
-  } 
+  localStorage.getItem("playerX") && localStorage.getItem("playerO") ? randomizeStartPlayer() : backToStartButton();
 
   onMounted(() => {
     window.addEventListener("beforeunload", saveGameState);
