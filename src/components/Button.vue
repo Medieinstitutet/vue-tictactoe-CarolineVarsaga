@@ -17,4 +17,18 @@
   </button>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+  button {
+    background-color: rgb(174, 95, 12); 
+    width: 300px; 
+
+    &:hover {
+      background-color: rgb(213, 124, 45);
+      border: 1px solid rgb(255, 140, 0); 
+    }
+
+    &:active {
+      background-color: rgb(174, 95, 12); 
+    }
+  }
+</style>
