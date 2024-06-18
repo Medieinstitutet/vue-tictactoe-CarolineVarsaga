@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, watch } from "vue"
+  import Button from "../Button.vue";
 
   interface IAddPlayerProps {
     playerX: string; 
@@ -43,19 +44,39 @@
       updatePlayerText(isPlayerX, playerValue); 
       emits("playerSaved"); 
     } else {
-      alert("Please, enter a player name");
+      alert("Please, enter your player name");
     }
   } 
 </script>
 
 <template>
+  <h1>Tic Tac Toe</h1>
   <h2>Enter player name</h2>
-  <div>
+  <div class="login">
     <span>{{ playerSpanText }}</span> 
     <input v-model="inputName" type="text" minlength="1"/>
-    <button @click="savePlayerName">Save</button>
+    <Button @click="savePlayerName" class="saveButton">Save</Button>
   </div> 
 
 </template>
 
-<style scoped></style>
+<style scoped>
+  .login {
+    display: flex; 
+    flex-direction: column;
+    gap: 1rem; 
+    align-items: center; 
+    
+  }
+  input {
+    height: 25px; 
+    border-radius: 8px;
+    border: 1px solid #ccc; 
+    width: 250px;
+    background-color: rgb(51, 51, 51);
+  }
+
+  .saveButton {
+    width: 250px;
+  }
+</style>
