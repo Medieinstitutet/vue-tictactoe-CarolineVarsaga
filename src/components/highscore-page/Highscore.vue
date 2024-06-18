@@ -81,6 +81,10 @@
     border-radius: 20px;
     height: 25rem;
     width: 25rem;
+
+    @media (max-width: 410px) {
+      max-width: 18rem;
+    }
   }
 
   h2 {
@@ -93,5 +97,11 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr); 
     gap: 5rem; 
+  }
+  
+  button {
+    @media (max-width: 768px) {
+      width: 70%; 
+    }
   }
 </style>
