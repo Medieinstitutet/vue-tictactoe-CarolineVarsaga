@@ -56,12 +56,9 @@
           ? saveGameState() 
           : isBoardFull() 
             ? (winner.value = "No one", saveGameState()) 
-            : (isXNext.value = !isXNext.value, saveGameState()),
-          document.getElementById(`cell-${index}`)?.classList.add
+            : (isXNext.value = !isXNext.value, saveGameState())
         ) 
       : null; 
-
-
   }    
   
   const checkWinner = () => {
@@ -180,7 +177,7 @@
       color: rgb(250, 196, 95); 
     }
   }
-  
+
   .button-container {
       display: flex;
       flex-direction: column;
