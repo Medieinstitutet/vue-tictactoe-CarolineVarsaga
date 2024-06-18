@@ -19,16 +19,16 @@
 
 <style scoped lang="scss">
   button {
-    background-color: rgb(174, 95, 12); 
+    background-color: #ae5f0c; 
     width: 300px; 
 
     &:hover {
-      background-color: rgb(213, 124, 45);
-      border: 1px solid rgb(255, 140, 0); 
+      background-color: #d57c2d;
+      border: 1px solid #ff8c00; 
     }
 
     &:active {
-      background-color: rgb(174, 95, 12); 
+      background-color: #ae5f0c; 
     }
   }
 </style>
