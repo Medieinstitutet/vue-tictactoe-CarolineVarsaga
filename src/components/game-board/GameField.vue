@@ -47,7 +47,7 @@
     localStorage.setItem(localStorageGameKey, gameState);
   };
 
-  const cellClicked = (index: number) => {
+  const cellClicked = (index: number) => { 
     cells.value[index] === "" && !winner.value 
       ? (
         cells.value[index] = isXNext.value ? "X" : "O",
@@ -56,9 +56,12 @@
           ? saveGameState() 
           : isBoardFull() 
             ? (winner.value = "No one", saveGameState()) 
-            : (isXNext.value = !isXNext.value, saveGameState())
+            : (isXNext.value = !isXNext.value, saveGameState()),
+          document.getElementById(`cell-${index}`)?.classList.add
         ) 
       : null; 
+
+
   }    
   
   const checkWinner = () => {
@@ -139,16 +142,17 @@
 
     <div class="board">
       <Cell v-for="(cell, index) in cells"
+        :class="{ 'cell': true, 'x': cell === 'X', 'o': cell === 'O' }"
         :key="index"
         :cell="cell"
         :index="index"
         @click="cellClicked(index)"
-      />
+      />      
     </div> 
     <div class="button-container">
       <Button @click="viewHighscore">View highscore</Button>
       <Button v-if="winner" @click="playAgain">Play again</Button>
-      <Button @click="backToStartButton">Back to start</Button>
+      <Button @click="backToStartButton" class="backToStartButton">Back to start</Button>
     </div> 
   </div>
   <LandingPage v-if="showLandingPage" />
@@ -161,17 +165,39 @@
   />  
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: 300px; 
     margin: 20px auto;
-  } 
 
+    .x {
+      color: rgb(146, 146, 255); 
+    }
+
+    .o {
+      color: rgb(250, 196, 95); 
+    }
+  }
+  
   .button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem; 
-  } 
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem; 
+
+      .backToStartButton {
+        background-color: rgb(107, 14, 14); 
+        margin-top: 0.8rem; 
+
+      &:hover {
+        background-color: rgb(142, 28, 28); 
+        border: 1px solid rgb(213, 8, 8); 
+      }
+
+      &:active {
+        background-color: rgb(87, 8, 8); 
+      }
+    } 
+  }   
 </style>
