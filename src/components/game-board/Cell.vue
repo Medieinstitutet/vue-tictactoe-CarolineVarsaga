@@ -18,22 +18,38 @@
   </div>
 </template>
 
-<style scoped>
-.cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #ccc;
-  height: 100px;
-  font-size: 5rem;
-  cursor: pointer;
-}
+<style scoped lang="scss">
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    height: 100px;
+    font-size: 5rem;
+    cursor: pointer;
 
-.cell:hover {
-  background-color: rgb(66, 66, 66);
-}
+    &:hover {
+      background-color: rgb(66, 66, 66);
+    }
 
-.cell:active {
-  background-color: rgb(46, 46, 46);
-}
+    &:active {
+      background-color: rgb(46, 46, 46);
+    }
+
+    &:first-child {
+      border-radius: 20px 0 0 0;
+    }
+
+    &:nth-child(3) {
+      border-radius: 0 20px 0 0;
+    }
+
+    &:nth-child(7) {
+      border-radius:  0 0 0 20px;
+    }
+
+    &:nth-child(9) {
+      border-radius: 0 0 20px 0;
+    }
+  }
 </style>
