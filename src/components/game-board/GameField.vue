@@ -33,9 +33,9 @@
   const playerXScore = ref<number>(parseInt(localStorage.getItem("playerXScore") ?? "0", 10));
   const playerOScore = ref<number>(parseInt(localStorage.getItem("playerOScore") ?? "0", 10)); 
 
-  const cells = ref<string[]>(initialState.cells);
-  const isXNext = ref<boolean>(initialState.isXNext);
-  const winner = ref<string | null>(initialState.winner);
+  let cells = ref<string[]>(initialState.cells);
+  let isXNext = ref<boolean>(initialState.isXNext);
+  let winner = ref<string | null>(initialState.winner);
 
   const currentPlayerName = computed(() => isXNext.value ? props.playerX : props.playerO);
 
@@ -45,6 +45,18 @@
   const saveGameState = () => {
     const gameState = JSON.stringify({ isXNext: isXNext.value, cells: cells.value, winner: winner.value });
     localStorage.setItem(localStorageGameKey, gameState);
+  };
+
+  const loadGameState = () => {
+    const gameState = localStorage.getItem(localStorageGameKey);
+    if (gameState) {
+      const parsedState = JSON.parse(gameState);
+      isXNext.value = parsedState.isXNext; 
+      cells.value = parsedState.cells; 
+      winner.value = parsedState.winner; 
+    } else {
+      randomizeStartPlayer();
+    }
   };
 
   const cellClicked = (index: number) => { 
@@ -105,7 +117,7 @@
   }
 
   const randomizeStartPlayer = () => {
-    isXNext.value = Math.random() < 0.5;
+    isXNext.value = Math.random() < 0.5;    
   };
 
   const backToStartButton = () => {
@@ -120,7 +132,7 @@
     showHighscore.value = true; 
   } 
 
-  localStorage.getItem("playerX") && localStorage.getItem("playerO") ? randomizeStartPlayer() : backToStartButton();
+  localStorage.getItem("playerX") && localStorage.getItem("playerO") ? loadGameState() : backToStartButton();
 
   onMounted(() => {
     window.addEventListener("beforeunload", saveGameState);
@@ -163,7 +175,7 @@
 </template>
 
 <style scoped lang="scss">
-@keyframes pulseX {
+  @keyframes pulseX {
     0% {
       transform: scale(1);
     }
@@ -186,9 +198,8 @@
     100% {
       transform: scale(1);
     }
-
   }
-  
+
   .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
