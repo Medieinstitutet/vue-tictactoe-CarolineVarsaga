@@ -61,6 +61,22 @@
 </template>
 
 <style scoped>
+ @keyframes pulse {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      transform: scale(1.2) rotate(-7deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  h1 {
+    animation: pulse 1.8s infinite;
+    display: inline-block;
+  }
   .login {
     display: flex; 
     flex-direction: column;
@@ -71,7 +87,7 @@
   .playerNameText {
     font-size: 1.5rem;
   }
-  
+
   input {
     height: 25px; 
     border-radius: 8px;
