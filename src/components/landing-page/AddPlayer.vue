@@ -53,7 +53,7 @@
   <h1>Tic Tac Toe</h1>
   <h2>Enter player name</h2>
   <div class="login">
-    <span>{{ playerSpanText }}</span> 
+    <span class="playerNameText">{{ playerSpanText }}</span> 
     <input v-model="inputName" type="text" minlength="1"/>
     <Button @click="savePlayerName" class="saveButton">Save</Button>
   </div> 
@@ -66,7 +66,10 @@
     flex-direction: column;
     gap: 1rem; 
     align-items: center; 
-    
+  }
+
+  .playerNameText {
+    font-size: 1.5rem;
   }
   input {
     height: 25px; 
