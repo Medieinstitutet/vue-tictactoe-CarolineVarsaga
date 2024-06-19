@@ -9,6 +9,7 @@
   interface IGameBoardProps {
     playerX: string; 
     playerO: string; 
+    isSinglePlayer: boolean;
   }
   
   const props = defineProps<IGameBoardProps>(); 
@@ -41,6 +42,7 @@
 
   const showLandingPage = ref<boolean>(false);
   const showHighscore = ref<boolean>(false); 
+  const isSinglePlayer = ref(props.isSinglePlayer);
 
   const saveGameState = () => {
     const gameState = JSON.stringify({ isXNext: isXNext.value, cells: cells.value, winner: winner.value });
@@ -59,7 +61,49 @@
     }
   };
 
-  const cellClicked = (index: number) => { 
+
+
+  const makeMove = (index: number, player: string) => {
+    cells.value[index] = player;
+    checkWinner();
+  };
+
+  const handlePostMove = () => {
+    if (winner.value) {
+      saveGameState();
+    } else if (isBoardFull()) {
+      winner.value = "No one";
+      saveGameState();
+    } else {
+      isXNext.value = !isXNext.value;
+      saveGameState();
+    }
+  };
+
+  const computerMove = () => {
+    const emptyCells = cells.value
+      .map((cell, index) => (cell === "" ? index : null))
+      .filter(index => index !== null);
+
+    if (emptyCells.length > 0) {
+      const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)] as number;
+      makeMove(randomIndex, "O");
+      handlePostMove();
+    }
+  };
+
+  const cellClicked = (index: number) => {
+    if (cells.value[index] === "" && !winner.value) {
+      makeMove(index, isXNext.value ? "X" : "O");
+      handlePostMove();
+      if (isSinglePlayer.value && !isXNext.value) {
+        setTimeout(computerMove, 500);
+      }
+    }
+  };
+
+
+ /*  const cellClicked = (index: number) => { 
     cells.value[index] === "" && !winner.value 
       ? (
         cells.value[index] = isXNext.value ? "X" : "O",
@@ -71,7 +115,7 @@
             : (isXNext.value = !isXNext.value, saveGameState())
         ) 
       : null; 
-  }    
+  }     */
   
   const checkWinner = () => {
     if (winner.value) return;
