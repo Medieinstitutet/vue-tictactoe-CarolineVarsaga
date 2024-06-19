@@ -76,47 +76,35 @@
       saveGameState();
     } else {
       isXNext.value = !isXNext.value;
+      if (isSinglePlayer.value && currentPlayerName.value === "Computer" && !winner.value) {
+        setTimeout(computerMove, 500); 
+      }
       saveGameState();
     }
   };
 
   const computerMove = () => {
-    const emptyCells = cells.value
-      .map((cell, index) => (cell === "" ? index : null))
-      .filter(index => index !== null);
+    if (!winner.value && currentPlayerName.value === "Computer") {
+      const emptyCells = cells.value
+        .map((cell, index) => (cell === "" ? index : null))
+        .filter(index => index !== null);
 
-    if (emptyCells.length > 0) {
-      const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)] as number;
-      makeMove(randomIndex, "O");
-      handlePostMove();
-    }
+      if (emptyCells.length > 0) {
+        const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)] as number;
+        const computerSymbol = localStorage.getItem("playerX") === "Computer" ? "X" : "O";
+        makeMove(randomIndex, computerSymbol);
+        handlePostMove();
+      }
+    }   
   };
 
   const cellClicked = (index: number) => {
-    if (cells.value[index] === "" && !winner.value) {
+    if (cells.value[index] === "" && !winner.value && currentPlayerName.value !== "Computer") {
       makeMove(index, isXNext.value ? "X" : "O");
       handlePostMove();
-      if (isSinglePlayer.value && !isXNext.value) {
-        setTimeout(computerMove, 500);
-      }
     }
   };
 
-
- /*  const cellClicked = (index: number) => { 
-    cells.value[index] === "" && !winner.value 
-      ? (
-        cells.value[index] = isXNext.value ? "X" : "O",
-        checkWinner(),
-        winner.value 
-          ? saveGameState() 
-          : isBoardFull() 
-            ? (winner.value = "No one", saveGameState()) 
-            : (isXNext.value = !isXNext.value, saveGameState())
-        ) 
-      : null; 
-  }     */
-  
   const checkWinner = () => {
     if (winner.value) return;
 
@@ -155,10 +143,13 @@
 
   const playAgain = () => {
     cells.value.fill("");
-    localStorage.removeItem("tic-tac-toe-game"); 
-    winner.value = null; 
-    randomizeStartPlayer(); 
-  }
+    localStorage.removeItem("tic-tac-toe-game");
+    winner.value = null;
+    randomizeStartPlayer();
+    if (isSinglePlayer.value && !isXNext.value) {
+      setTimeout(computerMove, 500);
+    }
+  };
 
   const randomizeStartPlayer = () => {
     isXNext.value = Math.random() < 0.5;    
@@ -180,6 +171,9 @@
 
   onMounted(() => {
     window.addEventListener("beforeunload", saveGameState);
+    if (isSinglePlayer.value && !isXNext.value) {
+      setTimeout(computerMove, 500);
+    }
   });
 
   onUnmounted(() => {
