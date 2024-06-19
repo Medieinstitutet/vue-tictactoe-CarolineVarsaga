@@ -55,6 +55,7 @@
     v-if="showGameField"
     :playerX="playerX"
     :playerO="playerO"
+    :isSinglePlayer="true"
   /> 
 </template>
 
@@ -98,7 +99,7 @@
     grid-template-columns: repeat(2, 1fr); 
     gap: 5rem; 
   }
-  
+
   button {
     @media (max-width: 768px) {
       width: 70%; 
