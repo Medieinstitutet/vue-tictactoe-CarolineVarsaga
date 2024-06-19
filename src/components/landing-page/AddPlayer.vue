@@ -16,6 +16,8 @@
   const localPlayerX = ref<string>(props.playerX);
   const localPlayerO = ref<string>(props.playerO);
 
+  const isSinglePlayer = ref<boolean>(true); 
+
   const updatePlayerText = (isPlayerX: boolean, playerValue: string) => {
     if (isPlayerX) {
       localPlayerX.value = playerValue;
@@ -24,7 +26,7 @@
       localPlayerO.value = playerValue;
     }
     inputName.value = "";
-};
+  };
 
   watch(() => props.playerX, (newVal) => {
     localPlayerX.value = newVal;
@@ -47,10 +49,27 @@
       alert("Please, enter your player name");
     }
   } 
+
+  const handlePlayerModeChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    isSinglePlayer.value = target.id === "onePlayerRadio";
+  };
+  
 </script>
 
 <template>
   <h1>Tic Tac Toe</h1>
+  <div class="howManyPlayers">
+    <h2>How many players?</h2>
+    <div class="one-player">
+      <input type="radio" class="radio" id="onePlayerRadio" v-model="isSinglePlayer" @change="handlePlayerModeChange"/>
+      <label>1 player (against computer)</label>
+    </div>
+    <div class="two-players">
+      <input type="radio" class="radio" id="twoPlayersRadio" v-model="isSinglePlayer" :value="false" @change="handlePlayerModeChange"/> 
+      <label>2 players (local)</label>
+    </div>
+  </div>
   <h2>Enter player name</h2>
   <div class="login">
     <span class="playerNameText">{{ playerSpanText }}</span> 
@@ -77,6 +96,32 @@
     animation: pulse 1.8s infinite;
     display: inline-block;
   }
+
+  .howManyPlayers {
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+    padding-bottom: 2rem; 
+    border-bottom: 2px dashed #cc8a10; 
+  }
+
+  .radio {
+    accent-color: #cc8a10; 
+    width: 30px;
+    height: 30px;
+  }
+
+  .one-player, .two-players{
+    display: flex;
+    align-self: flex-start; 
+    align-items: center;
+    justify-content: center;
+  }
+
+  label {
+    margin-left: 0.5rem; 
+  } 
+
   .login {
     display: flex; 
     flex-direction: column;
