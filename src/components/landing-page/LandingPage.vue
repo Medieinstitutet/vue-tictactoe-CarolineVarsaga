@@ -24,6 +24,7 @@
     <GameField v-else 
       :playerX="playerX"
       :playerO="playerO"
+      :isSinglePlayer="true"
     />
   </div>
 </template>
