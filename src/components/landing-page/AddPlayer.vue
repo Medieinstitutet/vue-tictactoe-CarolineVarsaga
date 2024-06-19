@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch } from "vue"
+  import { ref, watch, computed, onMounted } from "vue"
   import Button from "../Button.vue";
 
   interface IAddPlayerProps {
@@ -8,7 +8,7 @@
   }
 
   const props = defineProps<IAddPlayerProps>(); 
-  const emits = defineEmits(["playerSaved"]); 
+  const emits = defineEmits(["playerSaved", "modeSelected"]); 
 
   const inputName = ref<string>("");
   const playerSpanText = ref<string>("Player X: ");
@@ -17,6 +17,15 @@
   const localPlayerO = ref<string>(props.playerO);
 
   const isSinglePlayer = ref<boolean>(true); 
+
+  const isNotSinglePlayer = computed<boolean>({
+    get() {
+      return !isSinglePlayer.value;
+    },
+    set(value) {
+      isSinglePlayer.value = !value;
+    }
+  });
 
   const updatePlayerText = (isPlayerX: boolean, playerValue: string) => {
     if (isPlayerX) {
@@ -37,24 +46,83 @@
   }); 
 
   const savePlayerName = () => {
-    if (inputName.value.trim()) {
-      const isPlayerX = !localPlayerX.value;
-      const playerKey = isPlayerX ? "playerX" : "playerO";
-      const playerValue = inputName.value;
+    const playerValue = inputName.value.trim();
 
-      localStorage.setItem(playerKey, playerValue);
-      updatePlayerText(isPlayerX, playerValue); 
-      emits("playerSaved"); 
+    if (playerValue) {
+      const isPlayerXTaken = localStorage.getItem("playerX");
+      const isPlayerOTaken = localStorage.getItem("playerO");
+
+      if (playerValue.toLowerCase() === "computer") {
+        alert("Name 'Computer' is reserved. Please choose a different name.");
+        return; 
+      }
+
+      if (isSinglePlayer.value) {
+        if (!isPlayerXTaken) {
+          handleModeSelection(true);
+          localStorage.setItem("playerX", playerValue);
+          emits("playerSaved");
+        } else if (!isPlayerOTaken) {
+          handleModeSelection(true);
+          localStorage.setItem("playerO", playerValue);
+          emits("playerSaved");
+        }
+      } else if (isNotSinglePlayer.value) {
+        const isPlayerX = playerSpanText.value === "Player X: ";
+        const playerKey = isPlayerX ? "playerX" : "playerO";
+
+        if (!localStorage.getItem(playerKey)) {
+          localStorage.setItem(playerKey, playerValue);
+          updatePlayerText(isPlayerX, playerValue);
+          emits("playerSaved");
+        }
+      }
     } else {
       alert("Please, enter your player name");
     }
-  } 
-
-  const handlePlayerModeChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    isSinglePlayer.value = target.id === "onePlayerRadio";
   };
-  
+
+  const handleModeSelection = (mode: boolean) => {
+    isSinglePlayer.value = mode;
+    emits("modeSelected", mode);
+    if (mode) {
+      randomizeStartPlayer();
+    } else {
+      localStorage.clear(); 
+      localPlayerX.value = "";
+      localPlayerO.value = "";      
+    }
+  };
+
+  const randomizeStartPlayer = () => {
+    const isPlayerXTaken = localStorage.getItem("playerX");
+    const isPlayerOTaken = localStorage.getItem("playerO");
+
+    if (!isPlayerXTaken && !isPlayerOTaken) {
+      const randomNumber = Math.random();
+      if (randomNumber < 0.5) {
+        localPlayerX.value = "Computer";
+        localPlayerO.value = "";
+        localStorage.setItem("playerX", localPlayerX.value);
+        localStorage.setItem("playerO", localPlayerO.value);
+      } else {
+        localPlayerX.value = ""; 
+        localPlayerO.value = "Computer";
+        localStorage.setItem("playerX", localPlayerX.value);
+        localStorage.setItem("playerO", localPlayerO.value);
+      }
+    } else if (!isPlayerXTaken) {
+      localPlayerX.value = "Computer";
+      localStorage.setItem("playerX", localPlayerX.value);
+    } else if (!isPlayerOTaken) {
+      localPlayerO.value = "Computer";
+      localStorage.setItem("playerO", localPlayerO.value);
+    }
+  };
+
+  onMounted(() => {
+    handleModeSelection(true); 
+  });
 </script>
 
 <template>
@@ -62,21 +130,21 @@
   <div class="howManyPlayers">
     <h2>How many players?</h2>
     <div class="one-player">
-      <input type="radio" class="radio" id="onePlayerRadio" v-model="isSinglePlayer" @change="handlePlayerModeChange"/>
+      <input type="radio" class="radio" id="onePlayerRadio" v-model="isSinglePlayer" :value=true @change="handleModeSelection(true)" checked/>
       <label>1 player (against computer)</label>
     </div>
     <div class="two-players">
-      <input type="radio" class="radio" id="twoPlayersRadio" v-model="isSinglePlayer" :value="false" @change="handlePlayerModeChange"/> 
+      <input type="radio" class="radio" id="twoPlayersRadio" v-model="isNotSinglePlayer" :value="true" @change="handleModeSelection(false)"/> 
       <label>2 players (local)</label>
     </div>
   </div>
   <h2>Enter player name</h2>
   <div class="login">
-    <span class="playerNameText">{{ playerSpanText }}</span> 
+    <span v-if="isNotSinglePlayer" class="playerNameText">{{ playerSpanText }}</span> 
+    <span v-else="isSinglePlayer"class="playerNameText">Your name:</span>
     <input v-model="inputName" type="text" minlength="1"/>
     <Button @click="savePlayerName" class="saveButton">Save</Button>
   </div> 
-
 </template>
 
 <style scoped>
