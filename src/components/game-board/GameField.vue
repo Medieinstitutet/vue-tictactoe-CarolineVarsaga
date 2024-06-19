@@ -55,13 +55,11 @@
       const parsedState = JSON.parse(gameState);
       isXNext.value = parsedState.isXNext; 
       cells.value = parsedState.cells; 
-      winner.value = parsedState.winner; 
+      winner.value = parsedState.winner;      
     } else {
-      randomizeStartPlayer();
+      randomizeStartPlayer();      
     }
   };
-
-
 
   const makeMove = (index: number, player: string) => {
     cells.value[index] = player;
@@ -77,7 +75,7 @@
     } else {
       isXNext.value = !isXNext.value;
       if (isSinglePlayer.value && currentPlayerName.value === "Computer" && !winner.value) {
-        setTimeout(computerMove, 500); 
+        setTimeout(computerMove, 500);         
       }
       saveGameState();
     }
@@ -95,7 +93,7 @@
         makeMove(randomIndex, computerSymbol);
         handlePostMove();
       }
-    }   
+    }       
   };
 
   const cellClicked = (index: number) => {
@@ -153,6 +151,10 @@
 
   const randomizeStartPlayer = () => {
     isXNext.value = Math.random() < 0.5;    
+
+    if (currentPlayerName.value === "Computer" && isSinglePlayer.value) {
+      setTimeout(computerMove, 500); 
+    }
   };
 
   const backToStartButton = () => {
