@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, computed, onMounted } from "vue"
+  import { ref, watch, onMounted } from "vue"
   import Button from "../Button.vue";
 
   interface IAddPlayerProps {
@@ -17,15 +17,7 @@
   const localPlayerO = ref<string>(props.playerO);
 
   const isSinglePlayer = ref<boolean>(true); 
-
-  const isNotSinglePlayer = computed<boolean>({
-    get() {
-      return !isSinglePlayer.value;
-    },
-    set(value) {
-      isSinglePlayer.value = !value;
-    }
-  });
+  const isNotSinglePlayer = ref<boolean>(!isSinglePlayer.value);
 
   const updatePlayerText = (isPlayerX: boolean, playerValue: string) => {
     if (isPlayerX) {
@@ -36,6 +28,10 @@
     }
     inputName.value = "";
   };
+
+  watch(isSinglePlayer, (newValue) => {
+    isNotSinglePlayer.value = !newValue;
+  });
 
   watch(() => props.playerX, (newVal) => {
     localPlayerX.value = newVal;
@@ -94,32 +90,23 @@
     }
   };
 
-  const randomizeStartPlayer = () => {
+   const randomizeStartPlayer = () => {
     const isPlayerXTaken = localStorage.getItem("playerX");
     const isPlayerOTaken = localStorage.getItem("playerO");
 
     if (!isPlayerXTaken && !isPlayerOTaken) {
       const randomNumber = Math.random();
-      if (randomNumber < 0.5) {
-        localPlayerX.value = "Computer";
-        localPlayerO.value = "";
-        localStorage.setItem("playerX", localPlayerX.value);
-        localStorage.setItem("playerO", localPlayerO.value);
-      } else {
-        localPlayerX.value = ""; 
-        localPlayerO.value = "Computer";
-        localStorage.setItem("playerX", localPlayerX.value);
-        localStorage.setItem("playerO", localPlayerO.value);
-      }
-    } else if (!isPlayerXTaken) {
-      localPlayerX.value = "Computer";
-      localStorage.setItem("playerX", localPlayerX.value);
-    } else if (!isPlayerOTaken) {
-      localPlayerO.value = "Computer";
-      localStorage.setItem("playerO", localPlayerO.value);
+      localPlayerX.value = randomNumber < 0.5 ? "Computer" : "";
+      localPlayerO.value = randomNumber < 0.5 ? "" : "Computer";
+    } else {
+      localPlayerX.value = !isPlayerXTaken && isPlayerOTaken ? "Computer" : localPlayerX.value;
+      localPlayerO.value = isPlayerXTaken && !isPlayerOTaken ? "Computer" : localPlayerO.value;
     }
-  };
 
+    localStorage.setItem("playerX", localPlayerX.value);
+    localStorage.setItem("playerO", localPlayerO.value);
+  };  
+  
   onMounted(() => {
     handleModeSelection(true); 
   });
