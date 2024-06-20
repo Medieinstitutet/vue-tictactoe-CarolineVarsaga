@@ -14,12 +14,12 @@ In singleplayer-mode, it's you against the computer.
 !["Landing page. Radiobuttons with options single- or multiplayer. Inputfield where you type in your name. Save-button."](screenshots/landing-page.png)
 !["Game board with nine squares. X and O is played by each player. Under the board is a highscore-button and back to start-button."](screenshots/computer.png)
 
-In multiplayer-mode, you and your friend plays against each other localy. 
+<br> In multiplayer-mode, you and your friend plays against each other localy. 
 !["Game board with nine squares. X and O is played by each player. Under the board is a highscore-button and back to start-button."](screenshots/your-turn.png)
 !["Player O wins! Three O's in a row on the board. Play again-button appears."](screenshots/playerO-wins.png)
-When a game ends, the "Play again"-button appears.
+<br> When a game ends, the "Play again"-button appears.
 !["Highscore page. Dotted frame around the results. You can go back with the Game board-button."](screenshots/highscore.png)
-If you click on "Highscore", the highscore-page appears.
+<br>If you click on "Highscore", the highscore-page appears.
 
 ### LIGHTHOUSE
 !["Validation, 100."](screenshots/lighthouse-validation.png)
